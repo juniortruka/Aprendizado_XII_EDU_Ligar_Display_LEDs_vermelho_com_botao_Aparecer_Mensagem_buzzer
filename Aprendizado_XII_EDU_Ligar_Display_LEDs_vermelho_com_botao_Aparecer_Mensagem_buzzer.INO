@@ -1,35 +1,40 @@
+// Projeto de dispositivo de detecção de movimento; 
+
+// Display do LCD ;
+
 #include <LiquidCrystal_I2C.h>
 
-LiquidCrystal_I2C lcd_1(32, 16, 2);
+LiquidCrystal_I2C lcd_1(32, 16, 12); // pino 02 sensor para o display; 
 
-// Pino do botão
-const int botaoPin = 2;
-int led01 = 13;
-int led02 = 10;
-int buzzer = 12; 
-int val = 0; 
+// Declaração dos pinos e componentes eletr}onicos:
+int pirPin = 2; // Pino do sensor PIR movimento
+int led01 = 12; // led verde 
+int led02 = 13; // led vermelho
+int buzzer = 11; // buzzer sonoro
+
+// Variável para armazenar o estado do sensor;
+
+int pirState = LOW; // O sensor começa sem nenhuma informação.
+int val = 0; // leitura do pino do sensor
 
 void setup() {
+
+  // configuração do display LCD 16x2 i2c; 
   
-  // Inicializa o LCD e configuração 
-  
- lcd_1.init();
+  lcd_1.init();
 
   lcd_1.setCursor(0, 0);
   lcd_1.backlight();
   lcd_1.display();
+
+ // Leds e sensor de movimento
   
-  
-// Demais componentes: 
-  
-  pinMode (botaoPin, INPUT);
-  pinMode (led01, OUTPUT);
-  pinMode (led02, OUTPUT);
+  pinMode(pirPin, INPUT);   // define o pino do PIR como entrada
+  pinMode(led01, OUTPUT);  // define o pino do LED como saída
+  pinMode(led02, OUTPUT);  // define o pino do LED como saída
   pinMode (buzzer, OUTPUT);
-  
-  
-  
-  
+ 
+ 
 }
 
 void loop() {
@@ -37,8 +42,9 @@ void loop() {
   
    for (int i = 0; i<5; i++){
    
-   
-   val = digitalRead (botaoPin);
+// Verificar o valor do sensor PIR para ver se detectou movimento   
+ 
+  val = digitalRead (pirPin); // ler o sensor PIR. 
   
    while (val == HIGH) {
    
@@ -46,18 +52,18 @@ void loop() {
  // mensagem no LCD para o botão pressionado;
  
   lcd_1.setCursor(0, 0);
-  lcd_1.print("Botao");
+  lcd_1.print("Movimento");
   delay(2000); // Wait for 2000 millisecond(s)
   lcd_1.setCursor(0, 1);
-  lcd_1.print("pressionado!!!");
+  lcd_1.print("detectado!!!");
   delay(2000); // Wait for 2000 millisecond(s)
   lcd_1.clear();
      
 // Para os leds e buzzers acionar; 
      
-  digitalWrite (led02, LOW);
+  digitalWrite (led01, LOW);
   
-  digitalWrite (led01, HIGH); 
+  digitalWrite (led02, HIGH); 
   delay (500);   
      
   digitalWrite (led01, LOW); 
@@ -67,8 +73,10 @@ void loop() {
     delay(50);
     noTone (buzzer);
     delay(50);
-  
-  val = digitalRead (botaoPin);
+
+     // Descansar o sensor; 
+     
+  val = digitalRead (pirPin);
      
   delay (50);
        
@@ -86,8 +94,8 @@ void loop() {
   delay(2000); // Wait for 2000 millisecond(s)
   lcd_1.clear();
   
-   digitalWrite (led01, LOW);
-   digitalWrite (led02, HIGH);
+   digitalWrite (led02, LOW);
+   digitalWrite (led01, HIGH);
    delay (2000);
    
 }
